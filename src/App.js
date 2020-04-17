@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 
 function App() {
@@ -8,17 +8,31 @@ function App() {
     "Where do programmers like to hangout? The Foo Bar"
   ];
 
+  const INITIAL_GAME_STATE = {victory: false, startTime: null, endTime: null}
   const [snippet, setSnippet] = useState('');
   const [userText, setUserText] = useState('');
+  const [gameState, setGameState] = useState(INITIAL_GAME_STATE);
+
+  useEffect(() => {
+    if (gameState.victory) document.title = 'Nice Run!';
+  });
 
   const updateUserText = event => {
     setUserText(event.target.value);
-    console.log(`current userText`, userText);
+
+    if (event.target.value === snippet) {
+      setGameState({
+        ...gameState,
+        victory: true,
+        endTime: new Date().getTime() - gameState.startTime
+      });
+    }
   }
 
   const chooseSnippet = snippetIndex => () => {
     console.log('setSnippet', snippetIndex);
     setSnippet(SNIPPETS[snippetIndex]);
+    setGameState({...gameState, startTime: new Date().getTime()});
   };
 
   return (
@@ -27,6 +41,7 @@ function App() {
       <hr />
       <h3>Snippet</h3>
       {snippet}
+      <h4>{gameState.victory ? `Nice Run! Time: ${gameState.endTime}ms` : null}</h4>
       <input value={userText} onChange={updateUserText} />
       <hr />
       {
