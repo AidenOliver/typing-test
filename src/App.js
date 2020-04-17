@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 
 function App() {
+  const SNIPPETS = [
+    "Bears, beets, battlestar galactica",
+    "What's Forrest Gump's password? 1Forrest1",
+    "Where do programmers like to hangout? The Foo Bar"
+  ];
+
+  const [snippet, setSnippet] = useState('');
+  const [userText, setUserText] = useState('');
+
+  const updateUserText = event => {
+    setUserText(event.target.value);
+    console.log(`current userText`, userText);
+  }
+
+  const chooseSnippet = snippetIndex => () => {
+    console.log('setSnippet', snippetIndex);
+    setSnippet(SNIPPETS[snippetIndex]);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Typing Test</h2>
+      <hr />
+      <h3>Snippet</h3>
+      {snippet}
+      <input value={userText} onChange={updateUserText} />
+      <hr />
+      {
+        SNIPPETS.map((SNIPPET, index) => (
+          <button onClick={chooseSnippet(index)} key={index}>
+            {SNIPPET.substring(0, 10)}...
+          </button>
+        ))
+      }
     </div>
   );
 }
